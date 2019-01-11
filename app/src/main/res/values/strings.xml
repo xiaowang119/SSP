@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">传感信息终端</string>
+    <string name="orderSwitch1">命令开关1</string>
+    <string name="orderSwitch2">命令开关2</string>
+    <string name="orderSwitch3">命令开关3</string>
+    <string name="orderSwitch4">命令开关4</string>
+    <string name="orderSwitch5">命令开关5</string>
+    <string name="orderSwitch6">命令开关6</string>
+    <string name="orderSwitch7">命令开关7</string>
+    <string name="orderSwitch8">命令开关8</string>
+    <string name="orderSwitch9">命令开关9</string>
+    <string name="orderSwitch10">命令开关10</string>
+
+    <string name="sensor1">
+        温度传感器|湿度传感器|压力传感器|速度传感器|转速传感器|液位传感器
+    </string>
+
+    <string-array name="sensor1">
+        <item>温度传感器</item>
+        <item>湿度传感器</item>
+        <item>压力传感器</item>
+        <item>速度传感器</item>
+        <item>转速传感器</item>
+        <item>液位传感器</item>
+    </string-array>
+
+    <string name="temp_meter">温度传感器</string>
+    <string name="humi_meter">湿度传感器</string>
+    <string name="pres_meter">压力传感器</string>
+    <string name="spee_meter">速度传感器</string>
+    <string name="tach_meter">转速传感器</string>
+    <string name="liqu_meter">液位传感器</string>
+
+    <string name="sensor2">
+        重汽室外温度传感器|温度传感器|第三传感器|第四传感器|
+        第五传感器|第六传感器|第七传感器|第八传感器|第九传感器|第十传感器
+    </string>
+    <string name="msgTest1">
+        11|V|128.7|192.2|无
+    </string>
+    <string name="msgTest2">
+        22|Kz|3368|4451|无
+    </string>
+    <string name="msgTest3">
+        11|A|9.71|10.45|无
+    </string>
+    <string name="msgTest4">
+        11|mm|210|192.2|无
+    </string>
+    <string name="msgTest5">
+        11|Kg|342.55|339.42|无
+    </string>
+</resources>

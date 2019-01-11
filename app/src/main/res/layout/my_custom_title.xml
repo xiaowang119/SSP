@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_gravity="fill_horizontal"
+    android:orientation="horizontal"
+    android:layout_height="fill_parent" >
+
+    <TextView android:id="@+id/header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:text="SPP | Version 1.0"/>
+
+    <TextView
+        android:id="@+id/state_connected"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|start"
+        android:singleLine="true"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:drawableStart="@drawable/lamp_green"
+        android:textColor="#FFFFFF"
+        android:text="已连接到..."/>
+
+    <TextView
+        android:id="@+id/state_disconnected"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|start"
+        android:singleLine="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:drawableStart="@drawable/lamp_red"
+        android:textColor="#FFFFFF"
+        android:text="连接断开"/>
+
+    <TextView
+        android:id="@+id/state_abnormal"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|start"
+        android:singleLine="true"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:drawableStart="@drawable/lamp_yellow"
+        android:textColor="#FFFFFF"
+        android:text="连接异常"/>
+
+
+
+</RelativeLayout>
