@@ -70,7 +70,7 @@ public class Mode1 extends AppCompatActivity {
         }
     }
 
-    public static int getResId(String variableName, Class<?> c) {
+   /* public static int getResId(String variableName, Class<?> c) {
         try {
             Field idField = c.getDeclaredField(variableName);
             return idField.getInt(idField);
@@ -78,7 +78,7 @@ public class Mode1 extends AppCompatActivity {
             e.printStackTrace();
             return -1;
         }
-    }
+    }*/
 
     /*public View getViewByPosition(int pos, ListView listView) {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
@@ -90,8 +90,6 @@ public class Mode1 extends AppCompatActivity {
             return listView.getChildAt(childIndex);
         }
     }*/
-
-
 
 /*
     public void write(byte[] request) {

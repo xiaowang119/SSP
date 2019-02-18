@@ -360,6 +360,7 @@ public class ExaminePage extends Activity {
     private class MySwitchListener implements CompoundButton.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            //通过两态开关来决定上位机的数据包内容
             switch (buttonView.getId()) {
                 case R.id.switch1 :
                     if (isChecked) {
@@ -434,7 +435,6 @@ public class ExaminePage extends Activity {
             }
         }
     }
-
 
     public void showText(String str) {
         Toast.makeText(ExaminePage.this, str, Toast.LENGTH_SHORT).show();

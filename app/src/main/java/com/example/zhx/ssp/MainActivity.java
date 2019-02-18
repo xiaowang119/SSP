@@ -146,11 +146,10 @@ public class MainActivity extends AppCompatActivity {
             mBluetoothService.connect(remoteDevice);
 
             //通过判断蓝牙设备的不同类型来选择不同的连接方式
-                /*if (currentRemoteDevice.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.AUDIO_VIDEO) {
-                    new MusicService(MainActivity.this, bluetoothAdapter, currentRemoteDevice).connectBlueDevices();
+                /*if (remoteDevice.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.AUDIO_VIDEO) {
+                    new MusicService(MainActivity.this, bluetoothAdapter, remoteDevice).connectBlueDevices();
                 }else {
-                    //new MusicService(MainActivity.this, bluetoothAdapter, remoteDevice).connectBlueDevices();
-                    mBluetoothService.connect(currentRemoteDevice);
+                    mBluetoothService.connect(remoteDevice);
                 }*/
         }
     }
@@ -181,22 +180,20 @@ public class MainActivity extends AppCompatActivity {
 
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
+                /*case Constants.MESSAGE_STATE_CHANGE:
                     String str;
                     int index;
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-
                             break;
                         case BluetoothService.STATE_CONNECTING:
-
                             break;
                         case BluetoothService.STATE_LISTEN:
                             break;
                         case BluetoothService.STATE_NONE:
                             break;
                     }
-                    break;
+                    break;*/
                 case Constants.MESSAGE_WRITE:
                     //byte[] writeBuf = (byte[]) msg.obj;
                     break;
@@ -216,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                     showText("Connected to " + remoteDevice.getName());
                     break;
                 case Constants.MESSAGE_TOAST:
-
                     break;
             }
         }

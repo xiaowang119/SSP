@@ -12,11 +12,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +33,11 @@ import static com.example.zhx.ssp.MainActivity.REQUEST_BLUETOOTH_PERMISSION;
 
 public class BluetoothActivity extends AppCompatActivity {
 
-    private ListView listView;
+    private EditText mac;
     private BluetoothAdapter bluetoothAdapter;
+    /*private ListView listView;
     private ArrayAdapter arrayAdapter;
-    private List<String> deviceMessage;
+    private List<String> deviceMessage;*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,35 +48,38 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     private void init() {
-        Button reFresh, sure;
+        Button clear, sure;
 
-        reFresh = (Button)findViewById(R.id.refresh);
-        sure = (Button)findViewById(R.id.sure_select);
-        listView = (ListView)findViewById(R.id.bluetooth_list);
+        mac = (EditText)findViewById(R.id.mac);
+        clear = (Button)findViewById(R.id.clear_mac);
+        sure = (Button)findViewById(R.id.sure_mac);
+        //listView = (ListView)findViewById(R.id.bluetooth_list);
 
-        reFresh.setOnClickListener(new MyOnclickListener());
+        mac.setOnEditorActionListener(new MyEditListener());
+        clear.setOnClickListener(new MyOnclickListener());
         sure.setOnClickListener(new MyOnclickListener());
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        /*listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemClickListener(new MyOnItemSelectedListener());
 
         //设置广播接收过滤器
         IntentFilter filter = new IntentFilter();
         // 用BroadcastReceiver来取得搜索结果
         filter.addAction(BluetoothDevice.ACTION_FOUND);
-        this.registerReceiver(receiver, filter);
+        this.registerReceiver(receiver, filter);*/
         //获取相应权限
         getPermission();
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         //刷新设备列表
-        reFreshDevice();
+        //reFreshDevice();
         //静默开启蓝牙
         if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
             bluetoothAdapter.enable();
         }
     }
 
-    private void reFreshDevice() {
+    /*private void reFreshDevice() {
         //获取已经绑定的蓝牙设备
         Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
         deviceMessage = new ArrayList<>();
@@ -90,13 +97,13 @@ public class BluetoothActivity extends AppCompatActivity {
             bluetoothAdapter.cancelDiscovery();
         }
         bluetoothAdapter.startDiscovery();
-    }
+    }*/
 
 
     /**
      * 定义蓝牙搜索广播接收器
      */
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    /*private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -118,46 +125,69 @@ public class BluetoothActivity extends AppCompatActivity {
 
             }
         }
-    };
+    };*/
 
     private class MyOnclickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.refresh:
-                    reFreshDevice();
+                case R.id.clear_mac:
+                    mac.setText("");
                     break;
-                case R.id.sure_select:
+                case R.id.sure_mac:
                     sendBack();
                     break;
             }
         }
     }
 
-    private class MyOnItemSelectedListener implements AdapterView.OnItemClickListener {
+    //判断mac地址是否合法
+    private boolean check(String mac) {
+        if (!BluetoothAdapter.checkBluetoothAddress(mac)) {
+            showText("蓝牙地址无效");
+            return false;
+        }
+        return  true;
+    }
+
+
+    private class MyEditListener implements TextView.OnEditorActionListener {
+        public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+            String address = mac.getText().toString();
+            if (check(address)) {
+                Intent msg = new Intent();
+                msg.putExtra("deviceAddress", address);
+                BluetoothActivity.this.setResult(1, msg);
+                BluetoothActivity.this.finish();
+                return true;
+            } else {
+                showText("MAC地址有误.");
+                return false;
+            }
+        }
+    }
+
+
+    /*private class MyOnItemSelectedListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             listView.getChildAt(position).setSelected(true);
         }
-    }
+    }*/
+
+
 
     //通过setResult为主界面传递信息
     private void sendBack() {
-        int position = listView.getCheckedItemPosition();
-        if (position != INVALID_POSITION) {
-            TextView textView = (TextView) listView.getChildAt(position).findViewById(R.id.device_item_text);
-            String message = textView.getText().toString();
-            int index = message.indexOf('\n');
-            String address = message.substring(index + 1);
-
+        String address = mac.getText().toString();
+        if (check(address)) {
             Intent msg = new Intent();
             msg.putExtra("deviceAddress", address);
             BluetoothActivity.this.setResult(1, msg);
             BluetoothActivity.this.finish();
         } else {
-            showText("请选择设备！");
+            showText("MAC地址有误.");
         }
-
     }
 
     /**
