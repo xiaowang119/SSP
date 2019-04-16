@@ -10,6 +10,16 @@
     <string name="orderSwitch8">命令开关8</string>
     <string name="orderSwitch9">命令开关9</string>
     <string name="orderSwitch10">命令开关10</string>
+    <string name="orderSwitch11">命令开关11</string>
+    <string name="orderSwitch12">命令开关12</string>
+    <string name="orderSwitch13">命令开关13</string>
+    <string name="orderSwitch14">命令开关14</string>
+    <string name="orderSwitch15">命令开关15</string>
+    <string name="orderSwitch16">命令开关16</string>
+    <string name="orderSwitch17">命令开关17</string>
+    <string name="orderSwitch18">命令开关18</string>
+    <string name="orderSwitch19">命令开关19</string>
+    <string name="orderSwitch20">命令开关20</string>
 
     <string name="sensor1">
         温度传感器|湿度传感器|压力传感器|速度传感器|转速传感器|液位传感器

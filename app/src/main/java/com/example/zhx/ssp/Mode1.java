@@ -1,22 +1,14 @@
 package com.example.zhx.ssp;
 
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +49,8 @@ public class Mode1 extends AppCompatActivity {
         for (int i=0; i<name_id.length; i++) {
             sensorList.add(new DeviceListItem(name_id[i], drawable_id[i]));
         }
+
+        //DeviceListAdapter是自己构造的用于显示传感器列表的适配器、里面对itme的样式做了细致的设定
         ArrayAdapter<DeviceListItem> sensorAdapter = new DeviceListAdapter(this, sensorList);
         sensorView.setAdapter(sensorAdapter);
     }
@@ -64,11 +58,28 @@ public class Mode1 extends AppCompatActivity {
     private class MyItemClickListener implements AdapterView.OnItemClickListener {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent meter = new Intent();
-            meter.putExtra("deviceID", id);
+            TextView tmpView = view.findViewById(R.id.sensor_list_text);
+            String name = tmpView.getText().toString();
+            meter.putExtra("deviceName", name);
             meter.setClass(Mode1.this, ExaminePage.class);
             startActivity(meter);
         }
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.isCheckable())
+        {
+            item.setCheckable(true);
+        }
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
    /* public static int getResId(String variableName, Class<?> c) {
         try {

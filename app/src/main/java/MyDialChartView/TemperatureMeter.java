@@ -11,22 +11,25 @@ import org.xclcharts.chart.DialChart;
 import org.xclcharts.common.MathHelper;
 import org.xclcharts.renderer.XEnum;
 import org.xclcharts.renderer.plot.PlotAttrInfo;
-import org.xclcharts.renderer.plot.Pointer;
-import org.xclcharts.view.GraphicalView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemperatureMeter extends GraphicalView {
+public class TemperatureMeter extends MyGraphicalView {
 
     private String TAG = "DialChart01View";
 
-    private DialChart chart = new DialChart();
+    private DialChart chart = new MyChart();
     private float mPercentage = 0.0f;
 
     public TemperatureMeter(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
+        chartRender();
+    }
+
+    public TemperatureMeter(Context context, float totalAngle) {
+        super(context);
+        chart = new MyChart(totalAngle);
         chartRender();
     }
 
@@ -153,7 +156,7 @@ public class TemperatureMeter extends GraphicalView {
 
     public void addPointer()
     {
-        chart.addPointer();
+        /*chart.addPointer();
         chart.addPointer();
 
         List<Pointer> mp = chart.getPlotPointer();
@@ -164,7 +167,7 @@ public class TemperatureMeter extends GraphicalView {
         mp.get(1).setLength(0.5f);
         mp.get(1).setPointerStyle(XEnum.PointerStyle.TRIANGLE);
         mp.get(1).setPercentage( mPercentage * 0.7f );
-        mp.get(1).getPointerPaint().setColor(Color.RED);
+        mp.get(1).getPointerPaint().setColor(Color.RED);*/
     }
 
     public void setCurrentStatus(float percentage)

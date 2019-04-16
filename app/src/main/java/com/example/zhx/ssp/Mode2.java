@@ -3,6 +3,7 @@ package com.example.zhx.ssp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,6 +49,21 @@ public class Mode2 extends AppCompatActivity {
             table.setClass(Mode2.this, MsgTable.class);
             startActivity(table);
         }
+    }
+
+    //在返回的同时销毁当前活动页面
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.isCheckable())
+        {
+            item.setCheckable(true);
+        }
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -38,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static int meterData[][] = new int[3][2];
     public static double listTableData[] = new double[200];
-    public static boolean advance, later, isAbnormal = false;
+    public static boolean advance, later, isAddressFalse = true, isAbnormal = false;
     public static int mDeviceID = 0;
+    private static int signal = 0;
     public static BluetoothDevice remoteDevice;
     public static final int REQUEST_BLUETOOTH_PERMISSION = 10;
     public static final int REQUEST_DEVICE_ADDRESS_CODE = 1;
@@ -49,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     SharedPreferences pref;
     //private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    /**
-     * Member object for the chat services
-     */
     public static BluetoothService mBluetoothService = null;
 
     @Override
@@ -82,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         Button mode1, mode2;
 
-        mode1 = (Button) findViewById(R.id.mode1);
-        mode2 = (Button) findViewById(R.id.mode2);
+        mode1 = findViewById(R.id.mode1);
+        mode2 = findViewById(R.id.mode2);
 
         mode1.setOnClickListener(new MyOnclickListener());
         mode2.setOnClickListener(new MyOnclickListener());
@@ -110,21 +108,33 @@ public class MainActivity extends AppCompatActivity {
         later = false;
 
         //尝试对远程设备进行连接
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
-                    connectToBluetooth(deviceAddress);
-                }
-                mHandler.postDelayed(this, 5000);
-            }
-        });
+        mHandler.post(ConnectThread);
     }
 
-    private void connectToBluetooth(String deviceAddress) {
+    //用于连接远程设备的线程
+    private Runnable ConnectThread = new Runnable() {
+        @Override
+        public void run() {
+            if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
+                connectToBluetooth(deviceAddress);
+                if (signal > 0) {
+                    showText("连接断开，正在尝试重连！");
+                }
+                signal++;
+            }
+            mHandler.postDelayed(this, 5000);
+        }
+    };
 
+
+    //与尝试连接蓝牙的方法
+    private void connectToBluetooth(String deviceAddress) {
         if (!BluetoothAdapter.checkBluetoothAddress(deviceAddress)) {
-            showText("蓝牙地址无效");
+            if(isAddressFalse) { //防止持续不断的显示
+                showText("蓝牙地址无效");
+            }
+            isAddressFalse = false;
+            signal = 0;
             return;
         }
         remoteDevice = bluetoothAdapter.getRemoteDevice(deviceAddress);
@@ -158,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
      * 完成蓝牙配对功能
      * */
     public void pair(BluetoothAdapter adapter, BluetoothDevice device) {
-        if (!adapter.isDiscovering()) {
+        if (adapter.isDiscovering()) {
             adapter.cancelDiscovery();
         }
         try {
@@ -167,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             showText("配对失败");
+            signal = 0;
         }
     }
 
@@ -198,8 +209,10 @@ public class MainActivity extends AppCompatActivity {
                     //byte[] writeBuf = (byte[]) msg.obj;
                     break;
                 case Constants.MESSAGE_READ:
+                    //czq
                     byte[] readBuf = (byte[]) msg.obj;
                     //对接收到的数据进行操作
+                    showText("数据已收到！");
                     if (isLegal(readBuf, msg.arg1)) {
                         getMeterData(readBuf);
                         getListTableData(readBuf);
@@ -292,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                     if (msg[index] != (byte)0xaa)
                         return false;
                 } else if (index == 11){
-                    //判断数据包校验和是否合法
+                    //判断数据包校验和是否正常
                     if (msg[index] != sumCheck)
                         return false;
                 } else if (index > 11) {
@@ -310,25 +323,26 @@ public class MainActivity extends AppCompatActivity {
 
     //将接收到的数据包转化为虚拟表数据
     private void getMeterData(byte[] packet) {
-        mDeviceID = packet[3] & 0xff;
+        mDeviceID = (int) packet[3];
         int row, column, index = 4;
         for (row = 0; row < 3; row++) {
             for (column = 0; column < 2; column++) {
-                meterData[row][column] = packet[index++] & 0xff;
+                meterData[row][column] = (int) packet[index++];
             }
         }
     }
 
     //将接收到的数据转化为参数列表的数据
     private void getListTableData(byte[] packet) {
-        mDeviceID = packet[3] & 0xff;
-        double tmp = ((packet[4] & 0xff)*256 + (packet[5] & 0xff))/100 +0.1;
+        mDeviceID = (int) packet[3];
+        double tmp = (packet[4]*256 + packet[5])/100.0 +0.1;
         if (mDeviceID > 0 && mDeviceID <= 200) {
             listTableData[mDeviceID - 1] = tmp;
         }
     }
 
 
+    //当从临时窗口获取数据信息返回后执行此方法
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
@@ -341,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                     mBluetoothService.stop();
                     mBluetoothService = null;
                 }
+                isAddressFalse = true;
                 start();
                 break;
             case 2:
@@ -377,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
 
     //对导航栏菜单的点击事件进行处理
     public boolean onOptionsItemSelected(MenuItem item) {
+        mHandler.removeCallbacks(ConnectThread);
         Intent select = new Intent();
         select.setClass(MainActivity.this, BluetoothActivity.class);
         startActivityForResult(select, REQUEST_DEVICE_ADDRESS_CODE);

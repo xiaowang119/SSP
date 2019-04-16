@@ -439,6 +439,17 @@ public class BluetoothService {
             mState = STATE_CONNECTED;
         }
 
+
+
+
+
+
+
+
+
+
+
+        //此处为数据读写
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
@@ -447,6 +458,7 @@ public class BluetoothService {
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
+                    //czq
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 

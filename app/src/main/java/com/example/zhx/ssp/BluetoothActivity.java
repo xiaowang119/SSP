@@ -143,10 +143,10 @@ public class BluetoothActivity extends AppCompatActivity {
 
     //判断mac地址是否合法
     private boolean check(String mac) {
-        if (!BluetoothAdapter.checkBluetoothAddress(mac)) {
+        /*if (!BluetoothAdapter.checkBluetoothAddress(mac)) {
             showText("蓝牙地址无效");
             return false;
-        }
+        }*/
         return  true;
     }
 

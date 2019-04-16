@@ -8,27 +8,29 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import org.xclcharts.chart.DialChart;
-import org.xclcharts.common.MathHelper;
 import org.xclcharts.renderer.XEnum;
 import org.xclcharts.renderer.plot.PlotAttrInfo;
-import org.xclcharts.renderer.plot.Pointer;
-import org.xclcharts.view.GraphicalView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LiquidMeter extends GraphicalView {
+public class LiquidMeter extends MyGraphicalView {
 
     private String TAG = "DialChart01View";
 
-    private DialChart chart = new DialChart();
+    private DialChart chart = new MyChart();
     private float mPercentage = 0.0f;
 
     public LiquidMeter(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
         chartRender();
     }
+
+    public LiquidMeter(Context context, float totalAngle) {
+            super(context);
+            chart = new MyChart(totalAngle);
+            chartRender();
+        }
 
     public LiquidMeter(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -162,18 +164,6 @@ public class LiquidMeter extends GraphicalView {
 
     public void addPointer()
     {
-        chart.addPointer();
-        chart.addPointer();
-
-        List<Pointer> mp = chart.getPlotPointer();
-        mp.get(0).setPercentage( mPercentage * 0.3f );
-        mp.get(0).setLength(0.7f);
-        mp.get(0).getPointerPaint().setColor(Color.BLUE);
-
-        mp.get(1).setLength(0.5f);
-        mp.get(1).setPointerStyle(XEnum.PointerStyle.TRIANGLE);
-        mp.get(1).setPercentage( mPercentage * 0.7f );
-        mp.get(1).getPointerPaint().setColor(Color.RED);
     }
 
     public void setCurrentStatus(float percentage)
@@ -193,7 +183,6 @@ public class LiquidMeter extends GraphicalView {
         addPointer();
     }
 
-
     @Override
     public void render(Canvas canvas) {
         // TODO Auto-generated method stub
@@ -204,6 +193,5 @@ public class LiquidMeter extends GraphicalView {
             Log.e(TAG, e.toString());
         }
     }
-
 
 }

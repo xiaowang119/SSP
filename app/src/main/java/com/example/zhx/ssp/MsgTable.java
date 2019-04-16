@@ -1,5 +1,6 @@
 package com.example.zhx.ssp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -32,10 +34,10 @@ import static com.example.zhx.ssp.MainActivity.later;
 import static com.example.zhx.ssp.MainActivity.listTableData;
 import static com.example.zhx.ssp.MainActivity.mBluetoothService;
 
-public class MsgTable extends AppCompatActivity {
+public class MsgTable extends Activity {
 
     private long deviceID;
-    private int pageID = 1;
+    private static int pageID = 1;
     private boolean avoidRepetition = false;
     private List<MyMessage> msgList;
     private TableAdapter msgAdapter;
@@ -48,22 +50,25 @@ public class MsgTable extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_msgtable);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_custom_title);
 
         init();
     }
 
     private void init() {
-
         Intent lastIntent = getIntent();
         String deviceName = lastIntent.getStringExtra("deviceName");
         deviceID = lastIntent.getLongExtra("deviceID", 0L);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(deviceName + "参数列表");
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle(deviceName + "参数列表");
+        TextView headName = findViewById(R.id.header_text);
+        headName.setText(deviceName);
 
-        msgView = (ListView)findViewById(R.id.msgView);
-        msgList = new ArrayList<MyMessage>();
+        msgView = findViewById(R.id.msgView);
+        msgList = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
             msgList.add(new MyMessage());
         }
@@ -216,7 +221,7 @@ public class MsgTable extends AppCompatActivity {
                 case 1:
                     for (int i = 0; i < 40; i++) {
                         msgList.get(i).setId(String.valueOf(i+1));
-                        msgList.get(i).setDetection(String.valueOf(listTableData[i]));
+                        //msgList.get(i).setDetection(String.valueOf(listTableData[i]));
                     }
                     break;
                 case 2:
@@ -267,6 +272,12 @@ public class MsgTable extends AppCompatActivity {
         mHandler.removeCallbacks(writeThread);
         mHandler.removeCallbacks(judgeState);
     }
+
+
+
+
+
+
 
     /*private void tmpTest() {
         //做测试

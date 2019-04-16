@@ -4,7 +4,8 @@
     android:orientation="horizontal"
     android:layout_height="fill_parent" >
 
-    <TextView android:id="@+id/header_text"
+    <TextView
+        android:id="@+id/header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
@@ -19,7 +20,7 @@
 
     <TextView
         android:id="@+id/state_connected"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|start"
         android:singleLine="true"
@@ -32,7 +33,7 @@
 
     <TextView
         android:id="@+id/state_disconnected"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|start"
         android:singleLine="true"
@@ -44,7 +45,7 @@
 
     <TextView
         android:id="@+id/state_abnormal"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|start"
         android:singleLine="true"
@@ -54,7 +55,5 @@
         android:drawableStart="@drawable/lamp_yellow"
         android:textColor="#FFFFFF"
         android:text="连接异常"/>
-
-
 
 </RelativeLayout>

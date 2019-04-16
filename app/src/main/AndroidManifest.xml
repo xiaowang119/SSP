@@ -28,7 +28,8 @@
         </activity>
         <activity android:name=".Mode1"></activity>
         <activity android:name=".Mode2"></activity>
-        <activity android:name=".MsgTable"></activity>
+        <activity android:name=".MsgTable"
+            android:theme="@style/MyTheme" />
         <activity android:name=".ExaminePage"
             android:theme="@style/MyTheme" />
         <activity android:name=".BluetoothActivity"></activity>

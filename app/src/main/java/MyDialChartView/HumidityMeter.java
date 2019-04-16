@@ -11,20 +11,25 @@ import org.xclcharts.chart.DialChart;
 import org.xclcharts.common.MathHelper;
 import org.xclcharts.renderer.XEnum;
 import org.xclcharts.renderer.plot.PlotAttrInfo;
-import org.xclcharts.view.GraphicalView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HumidityMeter extends GraphicalView {
+public class HumidityMeter extends MyGraphicalView {
 
     private String TAG = "DialChart05View";
-    private DialChart chart = new DialChart();
+    private DialChart chart = new MyChart();
     private float mPercentage = 0.0f;
 
     public HumidityMeter(Context context) {
         super(context);
+        chartRender();
+    }
+
+    public HumidityMeter(Context context, float totalAngel) {
+        super(context);
+        chart = new MyChart(totalAngel);
         chartRender();
     }
 
@@ -140,8 +145,8 @@ public class HumidityMeter extends GraphicalView {
 
     public void addPointer()
     {
-
     }
+
     public void setCurrentStatus(float percentage)
     {
         //清理

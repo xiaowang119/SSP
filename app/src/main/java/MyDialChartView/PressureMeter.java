@@ -10,22 +10,25 @@ import android.util.Log;
 import org.xclcharts.chart.DialChart;
 import org.xclcharts.renderer.XEnum;
 import org.xclcharts.renderer.plot.PlotAttrInfo;
-import org.xclcharts.renderer.plot.Pointer;
-import org.xclcharts.view.GraphicalView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PressureMeter extends GraphicalView {
+public class PressureMeter extends MyGraphicalView {
 
     private String TAG = "DialChart01View";
 
-    private DialChart chart = new DialChart();
+    private DialChart chart = new MyChart();
     private float mPercentage = 0.0f;
 
     public PressureMeter(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
+        chartRender();
+    }
+
+    public PressureMeter(Context context, float totalAngle) {
+        super(context);
+        chart = new MyChart(totalAngle);
         chartRender();
     }
 
@@ -155,18 +158,6 @@ public class PressureMeter extends GraphicalView {
 
     public void addPointer()
     {
-        chart.addPointer();
-        chart.addPointer();
-
-        List<Pointer> mp = chart.getPlotPointer();
-        mp.get(0).setPercentage( mPercentage * 0.3f );
-        mp.get(0).setLength(0.7f);
-        mp.get(0).getPointerPaint().setColor(Color.BLUE);
-
-        mp.get(1).setLength(0.5f);
-        mp.get(1).setPointerStyle(XEnum.PointerStyle.TRIANGLE);
-        mp.get(1).setPercentage( mPercentage * 0.7f );
-        mp.get(1).getPointerPaint().setColor(Color.RED);
     }
 
     public void setCurrentStatus(float percentage)

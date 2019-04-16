@@ -229,6 +229,7 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch1"
                             android:textOff="@string/orderSwitch1"
                             android:button="@drawable/switch_button"/>
@@ -238,8 +239,19 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch2"
                             android:textOff="@string/orderSwitch2"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch3"
+                            android:textOff="@string/orderSwitch3"
                             android:button="@drawable/switch_button"/>
                         <ToggleButton
                             android:id="@+id/switch4"
@@ -247,15 +259,7 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
-                            android:textOn="@string/orderSwitch3"
-                            android:textOff="@string/orderSwitch3"
-                            android:button="@drawable/switch_button"/>
-                        <ToggleButton
-                            android:id="@+id/switch7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:background="#FFFFFF"
-                            android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch4"
                             android:textOff="@string/orderSwitch4"
                             android:button="@drawable/switch_button"/>
@@ -265,6 +269,7 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch5"
                             android:textOff="@string/orderSwitch5"
                             android:button="@drawable/switch_button"/>
@@ -274,8 +279,19 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch6"
                             android:textOff="@string/orderSwitch6"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch7"
+                            android:textOff="@string/orderSwitch7"
                             android:button="@drawable/switch_button"/>
                         <ToggleButton
                             android:id="@+id/switch8"
@@ -283,8 +299,9 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
-                            android:textOn="@string/orderSwitch7"
-                            android:textOff="@string/orderSwitch7"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch8"
+                            android:textOff="@string/orderSwitch8"
                             android:button="@drawable/switch_button"/>
                         <ToggleButton
                             android:id="@+id/switch9"
@@ -292,8 +309,9 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
-                            android:textOn="@string/orderSwitch8"
-                            android:textOff="@string/orderSwitch8"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch9"
+                            android:textOff="@string/orderSwitch9"
                             android:button="@drawable/switch_button"/>
                         <ToggleButton
                             android:id="@+id/switch10"
@@ -301,18 +319,114 @@
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
-                            android:textOn="@string/orderSwitch9"
-                            android:textOff="@string/orderSwitch9"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch10"
+                            android:textOff="@string/orderSwitch10"
                             android:button="@drawable/switch_button"/>
                         <ToggleButton
-                            android:id="@+id/switch3"
+                            android:id="@+id/switch11"
                             android:layout_width="wrap_content"
                             android:layout_height="25dp"
                             android:background="#FFFFFF"
                             android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch1"
+                            android:textOff="@string/orderSwitch1"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch2"
+                            android:textOff="@string/orderSwitch2"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch3"
+                            android:textOff="@string/orderSwitch3"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch4"
+                            android:textOff="@string/orderSwitch4"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch15"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch5"
+                            android:textOff="@string/orderSwitch5"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch6"
+                            android:textOff="@string/orderSwitch6"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch17"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch7"
+                            android:textOff="@string/orderSwitch7"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch18"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch8"
+                            android:textOff="@string/orderSwitch8"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch19"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:textOn="@string/orderSwitch9"
+                            android:textOff="@string/orderSwitch9"
+                            android:button="@drawable/switch_button"/>
+                        <ToggleButton
+                            android:id="@+id/switch20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="#FFFFFF"
+                            android:checked="false"
+                            android:visibility="gone"
                             android:textOn="@string/orderSwitch10"
                             android:textOff="@string/orderSwitch10"
                             android:button="@drawable/switch_button"/>
+
+
+
+
                     </LinearLayout>
                 </ScrollView>
 
@@ -321,13 +435,15 @@
                     android:layout_height="match_parent"
                     android:background="#D4D4D4"
                     android:orientation="vertical">
+
                     <LinearLayout
+                        android:id="@+id/progressTextLayout1"
                         android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal">
-
                         <TextView
                             android:id="@+id/progress1_name_text"
                             android:layout_width="wrap_content"
@@ -365,6 +481,7 @@
                             android:progressDrawable="@drawable/progress_style"
                             android:thumb="@drawable/progress_bt"
                             android:max="100"
+                            android:visibility="gone"
                             android:progress="0"
                             android:layout_weight="5"/>
                         <View
@@ -374,12 +491,13 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/progressTextLayout2"
+                        android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal">
-
                         <TextView
                             android:id="@+id/progress2_name_text"
                             android:layout_width="wrap_content"
@@ -406,10 +524,117 @@
                         android:orientation="horizontal">
                         <View
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_weight="1"/>
                         <SeekBar
                             android:id="@+id/progress2"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="3dp"
+                            android:progressDrawable="@drawable/progress_style"
+                            android:thumb="@drawable/progress_bt"
+                            android:max="100"
+                            android:visibility="gone"
+                            android:progress="0"
+                            android:layout_weight="5"/>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/progressTextLayout3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/progress3_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:text="拖条名称"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:text="输入值为："/>
+                        <TextView
+                            android:id="@+id/progress3_text"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/my_border"
+                            android:gravity="center"
+                            android:text="0"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="7"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+                        <SeekBar
+                            android:id="@+id/progress3"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="3dp"
+                            android:progressDrawable="@drawable/progress_style"
+                            android:thumb="@drawable/progress_bt"
+                            android:max="100"
+                            android:visibility="gone"
+                            android:progress="0"
+                            android:layout_weight="5"/>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/progressTextLayout4"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/progress4_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:text="拖条名称"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:text="输入值为："/>
+                        <TextView
+                            android:id="@+id/progress4_text"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/my_border"
+                            android:gravity="center"
+                            android:text="0"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="7"
+                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <SeekBar
+                            android:id="@+id/progress4"
                             android:layout_marginTop="5dp"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -421,9 +646,10 @@
                             android:layout_weight="5"/>
                         <View
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_weight="1"/>
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
