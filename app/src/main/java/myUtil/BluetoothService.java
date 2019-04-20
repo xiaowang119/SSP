@@ -18,11 +18,16 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+
+import com.example.zhx.ssp.MainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+
+import static android.os.SystemClock.currentThreadTimeMillis;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -275,7 +280,7 @@ public class BluetoothService {
         // The local server socket
         private final BluetoothServerSocket mmServerSocket;
 
-        public AcceptThread() {
+        private AcceptThread() {
             BluetoothServerSocket tmp = null;
             // Create a new listening server socket
             try {
@@ -328,7 +333,7 @@ public class BluetoothService {
             }
         }
 
-        public void cancel() {
+        private void cancel() {
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
@@ -347,7 +352,7 @@ public class BluetoothService {
         private BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
-        public ConnectThread(BluetoothDevice device) {
+        private ConnectThread(BluetoothDevice device) {
             mmDevice = device;
             BluetoothSocket tmp = null;
 
@@ -403,7 +408,7 @@ public class BluetoothService {
             connected(mmSocket, mmDevice);
         }
 
-        public void cancel() {
+        private void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {
@@ -421,7 +426,7 @@ public class BluetoothService {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        private ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -452,19 +457,54 @@ public class BluetoothService {
         //此处为数据读写
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[140];
             int bytes;
+            //byte cache[] = new byte[1024*1024];
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
+
                 try {
-                    //czq
-                    // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+
+                    /*//用send代替obtain
+                    int availableBytes = mmInStream.available();
+                    if (availableBytes<=0) {
+                        continue;
+                    } else {
+                        try {
+                            Thread.sleep(10);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    bytes = mmInStream.read(buffer);
+                    Message msg = new Message();
+                    Bundle data = new Bundle();
+                    //readMessage = new String(buffer, 0, bytes);
+                    data.putByteArray("BTdata", buffer);
+                    msg.what = Constants.MESSAGE_READ;
+                    msg.setData(data);
+                    mHandler.sendMessage(msg);*/
+
+
+                    /*bytes = 0;
+                    if (mmInStream.available()<=0) {
+                        continue;
+                    } else {
+                        try {
+                            Thread.sleep(20);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    bytes = mmInStream.read(buffer);*/
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    //mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    //android.util.Log.i("CZQ_test",String.valueOf(SystemClock.currentThreadTimeMillis()-time));
+                    //android.util.Log.i("CZQ_TEST", MainActivity.bytesToHex(buffer));
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

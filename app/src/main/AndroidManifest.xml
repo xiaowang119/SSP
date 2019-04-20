@@ -32,6 +32,7 @@
             android:theme="@style/MyTheme" />
         <activity android:name=".ExaminePage"
             android:theme="@style/MyTheme" />
+        <activity android:name=".CarType"></activity>
         <activity android:name=".BluetoothActivity"></activity>
     </application>
 

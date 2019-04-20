@@ -95,7 +95,7 @@ public class SpeedMeter extends MyGraphicalView {
 
             //轴2 --外围的标签轴
             List<String> tickLabels  = new ArrayList<String>();
-            for(int i = 0; i <= 180; i++) {
+            for(int i = 0; i <= 220; i++) {
                 if(i == 0 || i%10 == 0) {
                     tickLabels.add(Integer.toString(i));
                 }else if (i%5 == 0){

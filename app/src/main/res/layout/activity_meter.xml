@@ -461,6 +461,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/my_border"
                             android:gravity="center"
+                            android:textColor="#000000"
                             android:text="0"/>
                     </LinearLayout>
                     <LinearLayout
@@ -515,6 +516,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/my_border"
                             android:gravity="center"
+                            android:textColor="#000000"
                             android:text="0"/>
                     </LinearLayout>
                     <LinearLayout

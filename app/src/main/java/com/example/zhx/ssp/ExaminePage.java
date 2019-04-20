@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import MyDialChartView.AmpereMeter;
 import MyDialChartView.HumidityMeter;
 import MyDialChartView.LiquidMeter;
 import MyDialChartView.MyGraphicalView;
@@ -26,59 +29,80 @@ import MyDialChartView.PressureMeter;
 import MyDialChartView.SpeedMeter;
 import MyDialChartView.TachoMeter;
 import MyDialChartView.TemperatureMeter;
+import MyDialChartView.VoltMeter;
 import myUtil.BluetoothService;
 
 import static com.example.zhx.ssp.MainActivity.advance;
 import static com.example.zhx.ssp.MainActivity.later;
 import static com.example.zhx.ssp.MainActivity.isAbnormal;
 import static com.example.zhx.ssp.MainActivity.mBluetoothService;
+import static com.example.zhx.ssp.MainActivity.meterData;
 
 public class ExaminePage extends Activity {
 
+    //连接设备的id
     private int deviceID = 0;
-    private int progress1_max = 100;
-    private int progress2_max = 100;
-    private int switchNum = 10;
-    private int progressNum = 2;
+    //连接设备的名称
     private String deviceName;
+    //四个拖条的最大值
+    private static int progress1_max = 100,
+            progress2_max = 100, progress3_max = 100, progress4_max = 100;
+    //定义开关数量
+    private int switchNum = 10;
+    //定义拖条数量
+    private int progressNum = 2;
+    //拖条的文本信息显示框组成的链表
     private List<TextView> progressTextList;
+    //flag变量，防止反复的异常提升
     private boolean avoidRepetition = false;
+    //虚拟表的文本控件
     private TextView tableText1, tableText2, tableText3, tableUnit1, tableUnit2,
             tableUnit3, stateTip_connected, stateTip_disconnected, stateTip_abnormal;
-
+    //发给下位机的数据包
     private byte[] packet = new byte[12];
+    //虚拟表的单位和最大标识范围
+    private float unit_Max[][] = new float[3][2];
     private Handler mHandler = new Handler();
-    MyGraphicalView meter1, meter2, meter3;
+    //虚拟表，按需进行初始化（父类引用指向子类对象）
+    //MyGraphicalView meter1, meter2, meter3;
+    MyGraphicalView meter[] = new MyGraphicalView[3];
 
     protected void onCreate(Bundle saveIntanceState) {
         super.onCreate(saveIntanceState);
+        //更改界面title样式
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_meter);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_custom_title);
 
-        //通过上一个页面获取设备的id
+        //通过上一个页面获取设备的name
         Intent msg = getIntent();
         if (msg != null) {
             deviceName = msg.getStringExtra("deviceName");
         }
-
+        Log.i("CZQ", "进入测试页面");
         initView();
         start();
     }
 
     private void start() {
+        Log.i("CZQ", "已进入start");
         setPacket();
-        setTableData(new int[3][2]);
+        setTableData(new float[3]);
         mHandler.post(reFresh);
+        Log.i("CZQ", "已被Post");
         //mHandler.postDelayed(writeThread, 100);
         mHandler.postDelayed(judgeState, 1000);
     }
 
     //界面控件初始化
     private void initView() {
-        //SeekBar progress1, progress2;
-        //List<ToggleButton> switchList;
-        //ToggleButton sw1, sw2, sw3, sw4, sw5, sw6, sw7, sw8, sw9, sw10;
+        //初始化虚拟表参数
+        unit_Max[0][0] = 0.1f;
+        unit_Max[0][1] = 220;
+        unit_Max[1][0] = 0.1f;
+        unit_Max[1][1] = 2000;
+        unit_Max[2][0] = 1;
+        unit_Max[2][1] = 2000;
 
         //按照设定数量，获取进度条（拖条）
         if(progressNum>4) {
@@ -93,19 +117,15 @@ public class ExaminePage extends Activity {
             int progressId = getResId("progress"+i, R.id.class);
             SeekBar tmp = findViewById(progressId);
             tmp.setVisibility(View.VISIBLE);
+            switch (i) {
+                case 1: tmp.setMax(progress1_max); break;
+                case 2: tmp.setMax(progress2_max); break;
+                case 3: tmp.setMax(progress3_max); break;
+                case 4: tmp.setMax(progress4_max); break;
+            }
             tmp.setOnSeekBarChangeListener(new MyProgressListener());
         }
 
-
-        /*progress1 = findViewById(R.id.progress1);
-        progress2 = findViewById(R.id.progress2);
-        progress1.setMax(progress1_max);
-        progress1.setMax(progress2_max);
-        progress1.setOnSeekBarChangeListener(new MyProgressListener());
-        progress2.setOnSeekBarChangeListener(new MyProgressListener());
-        //获取拖条的数据显示文本框
-        progress1_text = findViewById(R.id.progress1_text);
-        progress2_text = findViewById(R.id.progress2_text);*/
 
 
         //按照设定数量，获取双态开关
@@ -122,27 +142,6 @@ public class ExaminePage extends Activity {
             tmp.setOnCheckedChangeListener(new MySwitchListener());
             //switchList.add(tmp);
         }
-
-        /*sw1 = findViewById(R.id.switch1);
-        sw2 = findViewById(R.id.switch2);
-        sw3 = findViewById(R.id.switch3);
-        sw4 = findViewById(R.id.switch4);
-        sw5 = findViewById(R.id.switch5);
-        sw6 = findViewById(R.id.switch6);
-        sw7 = findViewById(R.id.switch7);
-        sw8 = findViewById(R.id.switch8);
-        sw9 = findViewById(R.id.switch9);
-        sw10 = findViewById(R.id.switch10);
-        sw1.setOnCheckedChangeListener(new MySwitchListener());
-        sw2.setOnCheckedChangeListener(new MySwitchListener());
-        sw3.setOnCheckedChangeListener(new MySwitchListener());
-        sw4.setOnCheckedChangeListener(new MySwitchListener());
-        sw5.setOnCheckedChangeListener(new MySwitchListener());
-        sw6.setOnCheckedChangeListener(new MySwitchListener());
-        sw7.setOnCheckedChangeListener(new MySwitchListener());
-        sw8.setOnCheckedChangeListener(new MySwitchListener());
-        sw9.setOnCheckedChangeListener(new MySwitchListener());
-        sw10.setOnCheckedChangeListener(new MySwitchListener());*/
 
         //获取虚拟表的参数显示文本框
         tableText1 = findViewById(R.id.table_text1);
@@ -187,103 +186,90 @@ public class ExaminePage extends Activity {
 
         switch (deviceName) {
             case "温度传感器":
-                meter1 = new TemperatureMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new TemperatureMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new TemperatureMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new TemperatureMeter(this, 90f);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new TemperatureMeter(this, 180f);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new TemperatureMeter(this);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("℃");
                 tableUnit2.setText("℃");
                 tableUnit3.setText("℃");
                 break;
             case "湿度传感器":
-                meter1 = new HumidityMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new HumidityMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new HumidityMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new HumidityMeter(this, 90f);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new HumidityMeter(this, 180f);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new HumidityMeter(this);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("%");
                 tableUnit2.setText("%");
                 tableUnit3.setText("%");
                 break;
             case "压力传感器":
-                meter1 = new PressureMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new PressureMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new PressureMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new PressureMeter(this, 90f);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new PressureMeter(this, 180f);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new PressureMeter(this);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("KPa");
                 tableUnit2.setText("KPa");
                 tableUnit3.setText("KPa");
                 break;
             case "速度传感器":
-                meter1 = new SpeedMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new SpeedMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new SpeedMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new SpeedMeter(this);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new AmpereMeter(this, 180f);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new VoltMeter(this, 180f);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("km/h");
-                tableUnit2.setText("km/h");
-                tableUnit3.setText("km/h");
+                tableUnit2.setText("mA");
+                tableUnit3.setText("mV");
                 break;
             case "转速传感器":
-                meter1 = new TachoMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new TachoMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new TachoMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new TachoMeter(this);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new TachoMeter(this);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new TachoMeter(this);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("r/min");
                 tableUnit2.setText("r/min");
                 tableUnit3.setText("r/min");
                 break;
             case "液位传感器":
-                meter1 = new LiquidMeter(this, 90f);
-                meter1.setLayoutParams(layout);
-                meterLayout1.addView(meter1, 0);
-                meter2 = new LiquidMeter(this, 180f);
-                meter2.setLayoutParams(layout);
-                meterLayout2.addView(meter2, 0);
-                meter3 = new LiquidMeter(this);
-                meter3.setLayoutParams(layout);
-                meterLayout3.addView(meter3, 0);
+                meter[0] = new LiquidMeter(this, 90f);
+                meter[0].setLayoutParams(layout);
+                meterLayout1.addView(meter[0], 0);
+                meter[1] = new LiquidMeter(this, 180f);
+                meter[1].setLayoutParams(layout);
+                meterLayout2.addView(meter[1], 0);
+                meter[2] = new LiquidMeter(this);
+                meter[2].setLayoutParams(layout);
+                meterLayout3.addView(meter[2], 0);
                 tableUnit1.setVisibility(View.GONE);
                 tableUnit2.setVisibility(View.GONE);
                 tableUnit3.setVisibility(View.GONE);
                 break;
         }
-    }
-
-    //设置数据包默认的部分内容
-    private void setPacket() {
-        int head = Integer.parseInt("aa", 16);
-        int tail = Integer.parseInt("bb", 16);
-        int count = Integer.parseInt("08", 16);
-        packet[0] = (byte)head;
-        packet[1] = (byte)head;
-        packet[2] = (byte)deviceID;
-        packet[3] = (byte)count;
-        packet[10] = (byte)tail;
-        packet[11] = (byte)tail;
     }
 
     //定时向下位机发送数据包的线程
@@ -301,41 +287,57 @@ public class ExaminePage extends Activity {
         }
     };
 
-    //临时定义一个随机决定表盘指针的函数
-    private void refreshPointer() {
-        Random random = new Random();
-        meter1.setCurrentStatus(random.nextFloat());
-        meter2.setCurrentStatus(random.nextFloat());
-        meter3.setCurrentStatus(random.nextFloat());
-        //重构画面
-        meter1.invalidate();
-        meter2.invalidate();
-        meter3.invalidate();
-    }
-
     //定时刷新虚拟表的数据
     private Runnable reFresh = new Runnable() {
         @Override
         public void run() {
-            refreshPointer();
+            long time = SystemClock.currentThreadTimeMillis();
+            Log.i("CZQ", Long.toString(time));
+            setTableData(refreshPointer());
+            //setTableData(new float[3]);
             if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (!MainActivity.isAbnormal) {
-                    setTableData(MainActivity.meterData);
-                }else {
-                    setTableData(new int[3][2]);
+                if (MainActivity.isAbnormal) {
                     stateTip_connected.setVisibility(View.GONE);
                     stateTip_disconnected.setVisibility(View.GONE);
                     stateTip_abnormal.setVisibility(View.VISIBLE);
                 }
             }else {
-                setTableData(new int[3][2]);
                 stateTip_abnormal.setVisibility(View.GONE);
                 stateTip_connected.setVisibility(View.GONE);
                 stateTip_disconnected.setVisibility(View.VISIBLE);
             }
-            mHandler.postDelayed(reFresh, 1000);
+            mHandler.postDelayed(reFresh, 10);
+
         }
     };
+
+
+    //定义一个刷新表盘指针的函数
+    private float[] refreshPointer() {
+        float tmpData[] = new float[3];
+        for (int i=0; i<3; i++) {
+            tmpData[i] = (meterData[i][0]*256 + meterData[i][1]) * unit_Max[i][0];
+            float tmp = tmpData[i]/unit_Max[i][1];
+            Log.i("CZQ", Float.toString(tmp));
+            if (tmp > 1) {
+                meter[i].setCurrentStatus(1);
+            } else if (tmp < 0){
+                meter[i].setCurrentStatus(0);
+            } else {
+                meter[i].setCurrentStatus(tmp);
+            }
+            meter[i].invalidate();
+            tmpData[i] = (float)(Math.round(tmpData[i]*100))/100;
+        }
+        return tmpData;
+
+        /*float a = (float) Math.random();
+        for (int i=0; i<3; i++) {
+            meter[i].setCurrentStatus(a);
+            meter[i].invalidate();
+        }
+        return new float[3];*/
+    }
 
     //根据收到数据包的时间间隔对设备的工作状态进行判断
     private Runnable judgeState = new Runnable() {
@@ -360,10 +362,9 @@ public class ExaminePage extends Activity {
     };
 
     //设置虚拟表参数
-    private void setTableData(int[][] msg) {
+    private void setTableData(float[] msg) {
         for (int i = 0; i < 3; i++) {
-            double data = (double)msg[i][0] + (double)msg[i][1]/1000;
-            String tmp = String.valueOf(data);
+            String tmp = String.valueOf(msg[i]);
             switch (i + 1) {
                 case 1:
                     tableText1.setText(tmp);
@@ -376,6 +377,19 @@ public class ExaminePage extends Activity {
                     break;
             }
         }
+    }
+
+    //设置数据包默认的部分内容
+    private void setPacket() {
+        int head = Integer.parseInt("aa", 16);
+        int tail = Integer.parseInt("bb", 16);
+        int count = Integer.parseInt("08", 16);
+        packet[0] = (byte)head;
+        packet[1] = (byte)head;
+        packet[2] = (byte)deviceID;
+        packet[3] = (byte)count;
+        packet[10] = (byte)tail;
+        packet[11] = (byte)tail;
     }
 
     //得到当前数据包的校验和
@@ -518,13 +532,12 @@ public class ExaminePage extends Activity {
         }
     }
 
+    //按返回键时销毁当前activity
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.isCheckable())
-        {
+        if(item.isCheckable()) {
             item.setCheckable(true);
         }
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
