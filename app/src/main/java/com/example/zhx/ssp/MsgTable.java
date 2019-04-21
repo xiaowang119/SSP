@@ -4,35 +4,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import myUtil.BluetoothService;
+import myUtil.DataApplication;
 import myUtil.MyMessage;
 import myUtil.TableAdapter;
-
-import static com.example.zhx.ssp.MainActivity.advance;
-import static com.example.zhx.ssp.MainActivity.isAbnormal;
-import static com.example.zhx.ssp.MainActivity.later;
-import static com.example.zhx.ssp.MainActivity.listTableData;
-import static com.example.zhx.ssp.MainActivity.mBluetoothService;
 
 public class MsgTable extends Activity {
 
@@ -42,11 +29,10 @@ public class MsgTable extends Activity {
     private List<MyMessage> msgList;
     private TableAdapter msgAdapter;
     private ListView msgView;
-    private List<HashMap<String, String>> tmp;
-    private SimpleAdapter tmpAdapter;
 
     private byte[] packet = new byte[12];
     private Handler mHandler = new Handler();
+    private DataApplication myApplication;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +40,7 @@ public class MsgTable extends Activity {
         setContentView(R.layout.activity_msgtable);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_custom_title);
 
+        myApplication = (DataApplication) getApplication();
         init();
     }
 
@@ -87,8 +74,8 @@ public class MsgTable extends Activity {
     private Runnable reFresh = new Runnable() {
         @Override
         public void run() {
-            if (MainActivity.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (!isAbnormal) {
+            if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+                if (!myApplication.isAbnormal) {
                     setListTableData(true);
                 }else {
                     setListTableData(false);
@@ -106,10 +93,10 @@ public class MsgTable extends Activity {
         @Override
         public void run() {
             //只有当有设备接入时才会发送数据包
-            if (MainActivity.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+            if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
                 synchronized (MsgTable.this) {
                     packet[9] = getCheckSum();
-                    MainActivity.mBluetoothService.write(packet);
+                    myApplication.mBluetoothService.write(packet);
                 }
             }
             mHandler.postDelayed(writeThread, 100);
@@ -120,19 +107,19 @@ public class MsgTable extends Activity {
     private Runnable judgeState = new Runnable() {
         @Override
         public void run() {
-            if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (advance == later && !avoidRepetition) {
-                    isAbnormal = true;
+            if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+                if (myApplication.advance == myApplication.later && !avoidRepetition) {
+                    myApplication.isAbnormal = true;
                     showText("设备状态异常！");
                     avoidRepetition = true;
                     //advance = !later;
-                } else if (advance != later){
-                    isAbnormal = false;
-                    advance = later;
+                } else if (myApplication.advance != myApplication.later){
+                    myApplication.isAbnormal = false;
+                    myApplication.advance = myApplication.later;
                     avoidRepetition = false;
                 }
             }else {
-                isAbnormal = false;
+                myApplication.isAbnormal = false;
             }
             mHandler.postDelayed(judgeState, 1000);
         }
@@ -188,31 +175,31 @@ public class MsgTable extends Activity {
                 case 1:
                     for (int i = 0; i < 40; i++) {
                         msgList.get(i).setId(String.valueOf(i+1));
-                        msgList.get(i).setDetection(String.valueOf(listTableData[i]));
+                        msgList.get(i).setDetection(String.valueOf(myApplication.listTableData[i]));
                     }
                     break;
                 case 2:
                     for (int i = 40; i < 80; i++) {
                         msgList.get(i-40).setId(String.valueOf(i+1));
-                        msgList.get(i-40).setDetection(String.valueOf(listTableData[i]));
+                        msgList.get(i-40).setDetection(String.valueOf(myApplication.listTableData[i]));
                     }
                     break;
                 case 3:
                     for (int i = 80; i < 120; i++) {
                         msgList.get(i-80).setId(String.valueOf(i+1));
-                        msgList.get(i-80).setDetection(String.valueOf(listTableData[i]));
+                        msgList.get(i-80).setDetection(String.valueOf(myApplication.listTableData[i]));
                     }
                     break;
                 case 4:
                     for (int i = 120; i < 160; i++) {
                         msgList.get(i-120).setId(String.valueOf(i+1));
-                        msgList.get(i-120).setDetection(String.valueOf(listTableData[i]));
+                        msgList.get(i-120).setDetection(String.valueOf(myApplication.listTableData[i]));
                     }
                     break;
                 case 5:
                     for (int i = 160; i < 200; i++) {
                         msgList.get(i-160).setId(String.valueOf(i+1));
-                        msgList.get(i-160).setDetection(String.valueOf(listTableData[i]));
+                        msgList.get(i-160).setDetection(String.valueOf(myApplication.listTableData[i]));
                     }
                     break;
             }

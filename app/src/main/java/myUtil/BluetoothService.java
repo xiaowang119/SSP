@@ -82,18 +82,18 @@ public class BluetoothService {
         mState = getState();
         Log.d(TAG, "updateUserInterfaceTitle() " + mNewState + " -> " + mState);
         mNewState = mState;
-
         // Give the new state to the Handler so the UI Activity can update
         mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, mNewState, -1).sendToTarget();
     }
 
+
     /**
      * Return the current connection state.
      */
-
     public synchronized int getState() {
         return mState;
     }
+
 
     /*
      * Start the chat service. Specifically start AcceptThread to begin a
@@ -123,9 +123,9 @@ public class BluetoothService {
         updateUserInterfaceTitle();
     }
 
+
     /**
      * Start the ConnectThread to initiate a connection to a remote device.
-     *
      * @param device The BluetoothDevice to connect
      */
     public synchronized void connect(BluetoothDevice device) {
@@ -150,9 +150,9 @@ public class BluetoothService {
         updateUserInterfaceTitle();
     }
 
+
     /**
      * Start the ConnectedThread to begin managing a Bluetooth connection
-     *
      * @param socket The BluetoothSocket on which the connection was made
      * @param device The BluetoothDevice that has been connected
      */
@@ -188,6 +188,7 @@ public class BluetoothService {
         updateUserInterfaceTitle();
     }
 
+
     /**
      * Stop all threads
      */
@@ -214,6 +215,7 @@ public class BluetoothService {
         updateUserInterfaceTitle();
     }
 
+
     /**
      * Write to the ConnectedThread in an unsynchronized manner
      * @param out The bytes to write
@@ -230,6 +232,7 @@ public class BluetoothService {
         // Perform the write unsynchronized
         r.write(out);
     }
+
 
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
@@ -251,6 +254,7 @@ public class BluetoothService {
         // Start the service over to restart listening mode
         BluetoothService.this.start();
     }
+
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
@@ -446,22 +450,11 @@ public class BluetoothService {
         }
 
 
-
-
-
-
-
-
-
-
-
         //此处为数据读写
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[280];
             int bytes;
-            //byte cache[] = new byte[1024*1024];
-
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
 
@@ -490,23 +483,8 @@ public class BluetoothService {
                     msg.setData(data);
                     mHandler.sendMessage(msg);*/
 
-
-                    /*bytes = 0;
-                    if (mmInStream.available()<=0) {
-                        continue;
-                    } else {
-                        try {
-                            Thread.sleep(20);
-                        }catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    bytes = mmInStream.read(buffer);*/
-
                     // Send the obtained bytes to the UI Activity
                     //mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                    //android.util.Log.i("CZQ_test",String.valueOf(SystemClock.currentThreadTimeMillis()-time));
-                    //android.util.Log.i("CZQ_TEST", MainActivity.bytesToHex(buffer));
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
@@ -524,8 +502,8 @@ public class BluetoothService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
-                        .sendToTarget();
+               /* mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
+                        .sendToTarget();*/
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
@@ -542,7 +520,7 @@ public class BluetoothService {
     }
 
     //将byte转为对应字符串的函数
-    private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
+    private char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     public String bytesToHex(byte[] bytes, int length) {

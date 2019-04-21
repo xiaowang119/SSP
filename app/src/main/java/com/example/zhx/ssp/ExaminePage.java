@@ -32,10 +32,8 @@ import MyDialChartView.TemperatureMeter;
 import MyDialChartView.VoltMeter;
 import myUtil.BluetoothService;
 import myUtil.Constants;
+import myUtil.DataApplication;
 import myUtil.MyThread;
-
-import static com.example.zhx.ssp.MainActivity.mBluetoothService;
-import static com.example.zhx.ssp.MainActivity.meterData;
 
 public class ExaminePage extends Activity {
 
@@ -65,6 +63,9 @@ public class ExaminePage extends Activity {
     //虚拟表，按需进行初始化（父类引用指向子类对象）
     //MyGraphicalView meter1, meter2, meter3;
     MyGraphicalView meter[] = new MyGraphicalView[3];
+    private DataApplication myApplication;
+
+
 
     protected void onCreate(Bundle saveIntanceState) {
         super.onCreate(saveIntanceState);
@@ -74,6 +75,7 @@ public class ExaminePage extends Activity {
         getWindow().setBackgroundDrawable(null);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_custom_title);
 
+        myApplication = (DataApplication) getApplication();
         //通过上一个页面获取设备的name
         Intent msg = getIntent();
         if (msg != null) {
@@ -177,8 +179,8 @@ public class ExaminePage extends Activity {
         stateTip_abnormal = findViewById(R.id.state_abnormal);
         stateTip_connected = findViewById(R.id.state_connected);
         stateTip_disconnected = findViewById(R.id.state_disconnected);
-        if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-            String tip = "已连接到 " + MainActivity.remoteDevice.getName();
+        if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+            String tip = "已连接到 " + myApplication.remoteDevice.getName();
             stateTip_connected.setText(tip);
             stateTip_connected.setVisibility(View.VISIBLE);
             stateTip_disconnected.setVisibility(View.GONE);
@@ -291,10 +293,10 @@ public class ExaminePage extends Activity {
         @Override
         public void run() {
             //只有当有设备接入时才会发送数据包
-            if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+            if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
                 synchronized (ExaminePage.this) {
                     packet[9] = getCheckSum();
-                    mBluetoothService.write(packet);
+                    myApplication.mBluetoothService.write(packet);
                 }
             }
             mHandler.postDelayed(writeThread, 500);
@@ -358,7 +360,8 @@ public class ExaminePage extends Activity {
         //更具变化方向缓慢进行
         float tmpData[] = new float[3];
         for (int i=0; i<3; i++) {
-            tmpData[i] = (meterData[i][0]*256 + meterData[i][1]) * unit_Max[i][0];
+            tmpData[i] = (myApplication.meterData[i][0]*256
+                    + myApplication.meterData[i][1]) * unit_Max[i][0];
             float current = tmpData[i]/unit_Max[i][1];
             float old = meter[i].getmPercentage();
             Log.i("CZQ",Float.toString(current)+"-"+Float.toString(old));
@@ -371,13 +374,13 @@ public class ExaminePage extends Activity {
                     tmpData[i] = 0;
                 } else {
                     meter[i].setCurrentStatus(current);
-                    tmpData[i] = current;
+                    tmpData[i] = current*unit_Max[i][1];
                 }
             } else {
                 if (current > old) {
                     if (old+(1.0f/12) < 1) {
                         meter[i].setCurrentStatus(old+(1.0f/12));
-                        tmpData[i] = old+(1.0f/12);
+                        tmpData[i] = (old+(1.0f/12))*unit_Max[i][1];
                     } else {
                         meter[i].setCurrentStatus(1);
                         tmpData[i] = 1;
@@ -385,7 +388,7 @@ public class ExaminePage extends Activity {
                 } else {
                     if (old-(1.0f/12) > 0) {
                         meter[i].setCurrentStatus(old-(1.0f/12));
-                        tmpData[i] = old-(1.0f/12);
+                        tmpData[i] = (old-(1.0f/12))*unit_Max[i][1];
                     } else {
                         meter[i].setCurrentStatus(0);
                         tmpData[i] = 0;

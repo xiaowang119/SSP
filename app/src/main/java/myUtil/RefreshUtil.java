@@ -3,18 +3,18 @@ package myUtil;
 import android.os.Handler;
 import android.util.Log;
 
-import static com.example.zhx.ssp.MainActivity.dataCircle;
-import static com.example.zhx.ssp.MainActivity.meterData;
-
 public class RefreshUtil extends Thread{
     private Handler mHandler;
+
 
     public RefreshUtil(Handler mHandler) {
         this.mHandler = mHandler;
     }
 
-    public void run() {
-        /*long time;
+
+   
+    /*public void run() {
+        *//*long time;
         while (true) {
             time = SystemClock.currentThreadTimeMillis();
             Message msg = new Message();
@@ -28,7 +28,7 @@ public class RefreshUtil extends Thread{
                 e.printStackTrace();
                 break;
             }
-        }*/
+        }*//*
 
         mHandler.postDelayed(readThread,10);
     }
@@ -127,10 +127,10 @@ public class RefreshUtil extends Thread{
                 meterData[row][column] = packet[index++] & 0xff;
             }
         }
-        /*if ((packet[10] & 0xff) == 0) {
+        *//*if ((packet[10] & 0xff) == 0) {
             meterData[0][0] = 0;
             meterData[0][1] = 0;
-        }*/
+        }*//*
     }
 
     //将byte转为对应字符串的函数
@@ -147,5 +147,7 @@ public class RefreshUtil extends Thread{
             buf[index++] = HEX_CHAR[tmp & 0x0f];
         }
         return new String(buf);
-    }
+    }*/
+
+
 }

@@ -15,12 +15,16 @@ public class MyThread extends Thread {
     @Override
     public void run() {
         while(true) {
+            mHandler.sendEmptyMessage(flag);
+            if (this.isInterrupted()) {
+                break;
+            }
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
                 e.printStackTrace();
+                break;
             }
-            mHandler.sendEmptyMessage(flag);
         }
     }
 }
