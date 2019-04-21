@@ -5,8 +5,8 @@ import android.util.AttributeSet;
 import org.xclcharts.view.GraphicalView;
 
 public abstract class MyGraphicalView extends GraphicalView {
-    /*private DialChart chart = new DialChart();
-    private float mPercentage = 0.0f;*/
+    /*private DialChart chart = new DialChart();*/
+    float mPercentage = 0.0f;
 
     public MyGraphicalView(Context context) {
         super(context);
@@ -24,9 +24,9 @@ public abstract class MyGraphicalView extends GraphicalView {
     }
 
     public void setCurrentStatus(float percentage) {
-        /*mPercentage = percentage;
+        mPercentage = percentage;
         //清理
-        chart.clearAll();
+        /*chart.clearAll();
 
         //设置当前百分比
         chart.getPointer().setPercentage(mPercentage);
@@ -42,4 +42,8 @@ public abstract class MyGraphicalView extends GraphicalView {
     private void addAxis() {}
     private void addAttrInfo() {}
     private void addPointer() {}
+
+    public float getmPercentage() {
+        return mPercentage;
+    }
 }

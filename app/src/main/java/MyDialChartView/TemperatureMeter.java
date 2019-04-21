@@ -17,10 +17,10 @@ import java.util.List;
 
 public class TemperatureMeter extends MyGraphicalView {
 
-    private String TAG = "DialChart01View";
+    //private String TAG = "DialChart01View";
 
     private DialChart chart = new MyChart();
-    private float mPercentage = 0.0f;
+    //private float mPercentage = 0.0f;
 
     public TemperatureMeter(Context context) {
         super(context);
@@ -80,7 +80,8 @@ public class TemperatureMeter extends MyGraphicalView {
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
 
     }
@@ -136,7 +137,8 @@ public class TemperatureMeter extends MyGraphicalView {
             if(chart.getPlotAxis().size() >= 9)chart.getPlotAxis().get(9).getAxisPaint().setColor(Color.RED);*/
 
         }catch(Exception ex){
-            Log.e(TAG,ex.toString());
+            //Log.e(TAG,ex.toString());
+            ex.printStackTrace();
         }
     }
 
@@ -195,7 +197,8 @@ public class TemperatureMeter extends MyGraphicalView {
             chart.render(canvas);
 
         } catch (Exception e){
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
     }
 

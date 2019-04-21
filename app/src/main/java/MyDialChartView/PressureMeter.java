@@ -16,10 +16,10 @@ import java.util.List;
 
 public class PressureMeter extends MyGraphicalView {
 
-    private String TAG = "DialChart01View";
+    //private String TAG = "DialChart01View";
 
     private DialChart chart = new MyChart();
-    private float mPercentage = 0.0f;
+    //private float mPercentage = 0.0f;
 
     public PressureMeter(Context context) {
         super(context);
@@ -85,7 +85,8 @@ public class PressureMeter extends MyGraphicalView {
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
 
     }
@@ -138,7 +139,8 @@ public class PressureMeter extends MyGraphicalView {
 
 
         }catch(Exception ex){
-            Log.e(TAG,ex.toString());
+            //Log.e(TAG,ex.toString());
+            ex.printStackTrace();
         }
     }
 
@@ -185,7 +187,8 @@ public class PressureMeter extends MyGraphicalView {
             chart.render(canvas);
 
         } catch (Exception e){
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
     }
 

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
+import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -19,7 +20,6 @@ import android.widget.ToggleButton;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import MyDialChartView.AmpereMeter;
 import MyDialChartView.HumidityMeter;
@@ -31,10 +31,9 @@ import MyDialChartView.TachoMeter;
 import MyDialChartView.TemperatureMeter;
 import MyDialChartView.VoltMeter;
 import myUtil.BluetoothService;
+import myUtil.Constants;
+import myUtil.MyThread;
 
-import static com.example.zhx.ssp.MainActivity.advance;
-import static com.example.zhx.ssp.MainActivity.later;
-import static com.example.zhx.ssp.MainActivity.isAbnormal;
 import static com.example.zhx.ssp.MainActivity.mBluetoothService;
 import static com.example.zhx.ssp.MainActivity.meterData;
 
@@ -62,7 +61,7 @@ public class ExaminePage extends Activity {
     private byte[] packet = new byte[12];
     //虚拟表的单位和最大标识范围
     private float unit_Max[][] = new float[3][2];
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     //虚拟表，按需进行初始化（父类引用指向子类对象）
     //MyGraphicalView meter1, meter2, meter3;
     MyGraphicalView meter[] = new MyGraphicalView[3];
@@ -72,6 +71,7 @@ public class ExaminePage extends Activity {
         //更改界面title样式
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_meter);
+        getWindow().setBackgroundDrawable(null);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_custom_title);
 
         //通过上一个页面获取设备的name
@@ -79,19 +79,40 @@ public class ExaminePage extends Activity {
         if (msg != null) {
             deviceName = msg.getStringExtra("deviceName");
         }
-        Log.i("CZQ", "进入测试页面");
         initView();
+
+        setHandler();
         start();
+        new MyThread(250, mHandler, Constants.FROM_REFRESH_THREAD).start();
+
+    }
+
+    private void setHandler() {
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what) {
+                    case Constants.FROM_REFRESH_THREAD:
+                        reFresh();
+                        break;
+                    case Constants.FROM_STATUS_THREAD:
+
+                        break;
+                    case Constants.FROM_WRITE_THREAD:
+
+                        break;
+                }
+            }
+        };
     }
 
     private void start() {
-        Log.i("CZQ", "已进入start");
         setPacket();
         setTableData(new float[3]);
-        mHandler.post(reFresh);
-        Log.i("CZQ", "已被Post");
+        //mHandler.post(reFresh);
+        //new RefreshUtil(mmHandler).start();
         //mHandler.postDelayed(writeThread, 100);
-        mHandler.postDelayed(judgeState, 1000);
+        //mHandler.postDelayed(judgeState, 1000);
     }
 
     //界面控件初始化
@@ -125,8 +146,6 @@ public class ExaminePage extends Activity {
             }
             tmp.setOnSeekBarChangeListener(new MyProgressListener());
         }
-
-
 
         //按照设定数量，获取双态开关
         if(switchNum > 20) {
@@ -178,11 +197,6 @@ public class ExaminePage extends Activity {
         //设置虚拟表在父控件中的布局方式
         LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 5.5f);
-
-        //按需求选择填充的虚拟表
-        /* TemperatureMeter temperatureMeter = new TemperatureMeter(this);
-        temperatureMeter.setLayoutParams(tmp);
-        meterLayout1.addView(temperatureMeter, 0);*/
 
         switch (deviceName) {
             case "温度传感器":
@@ -283,42 +297,38 @@ public class ExaminePage extends Activity {
                     mBluetoothService.write(packet);
                 }
             }
-            mHandler.postDelayed(writeThread, 100);
+            mHandler.postDelayed(writeThread, 500);
         }
     };
 
-    //定时刷新虚拟表的数据
-    private Runnable reFresh = new Runnable() {
-        @Override
-        public void run() {
-            long time = SystemClock.currentThreadTimeMillis();
-            Log.i("CZQ", Long.toString(time));
-            setTableData(refreshPointer());
-            //setTableData(new float[3]);
-            if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (MainActivity.isAbnormal) {
-                    stateTip_connected.setVisibility(View.GONE);
-                    stateTip_disconnected.setVisibility(View.GONE);
-                    stateTip_abnormal.setVisibility(View.VISIBLE);
-                }
-            }else {
-                stateTip_abnormal.setVisibility(View.GONE);
+
+
+    private void reFresh() {
+        //Log.i("CZQ", "刷新一次");
+        setTableData(refreshPointer());
+        //setTableData(new float[3]);
+        /*if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+            if (MainActivity.isAbnormal) {
                 stateTip_connected.setVisibility(View.GONE);
-                stateTip_disconnected.setVisibility(View.VISIBLE);
+                stateTip_disconnected.setVisibility(View.GONE);
+                stateTip_abnormal.setVisibility(View.VISIBLE);
             }
-            mHandler.postDelayed(reFresh, 10);
-
-        }
-    };
-
+        }else {
+            stateTip_abnormal.setVisibility(View.GONE);
+            stateTip_connected.setVisibility(View.GONE);
+            stateTip_disconnected.setVisibility(View.VISIBLE);
+        }*/
+    }
 
     //定义一个刷新表盘指针的函数
     private float[] refreshPointer() {
-        float tmpData[] = new float[3];
+        //根据数据实时跳变
+        /*float tmpData[] = new float[3];
+        //long time = System.currentTimeMillis();
         for (int i=0; i<3; i++) {
             tmpData[i] = (meterData[i][0]*256 + meterData[i][1]) * unit_Max[i][0];
             float tmp = tmpData[i]/unit_Max[i][1];
-            Log.i("CZQ", Float.toString(tmp));
+            //Log.i("CZQ", ""+tmp);
             if (tmp > 1) {
                 meter[i].setCurrentStatus(1);
             } else if (tmp < 0){
@@ -329,18 +339,68 @@ public class ExaminePage extends Activity {
             meter[i].invalidate();
             tmpData[i] = (float)(Math.round(tmpData[i]*100))/100;
         }
-        return tmpData;
+       // Log.i("CZQ", Long.toString(System.currentTimeMillis()-time));
+        return tmpData;*/
 
-        /*float a = (float) Math.random();
+
+
+        //测试型随机跳变
+        /*float tmp = (float) Math.random();
+        meter[0].setCurrentStatus(tmp);
+        meter[1].setCurrentStatus(tmp);
+        meter[2].setCurrentStatus(tmp);
+        meter[0].invalidate();
+        meter[1].invalidate();
+        meter[2].invalidate();
+        return new float[3];*/
+
+
+        //更具变化方向缓慢进行
+        float tmpData[] = new float[3];
         for (int i=0; i<3; i++) {
-            meter[i].setCurrentStatus(a);
+            tmpData[i] = (meterData[i][0]*256 + meterData[i][1]) * unit_Max[i][0];
+            float current = tmpData[i]/unit_Max[i][1];
+            float old = meter[i].getmPercentage();
+            Log.i("CZQ",Float.toString(current)+"-"+Float.toString(old));
+            if(Math.abs(current-old) < 1.0f/12) {
+                if (current > 1) {
+                    meter[i].setCurrentStatus(1);
+                    tmpData[i] = 1;
+                } else if(current < 0) {
+                    meter[i].setCurrentStatus(0);
+                    tmpData[i] = 0;
+                } else {
+                    meter[i].setCurrentStatus(current);
+                    tmpData[i] = current;
+                }
+            } else {
+                if (current > old) {
+                    if (old+(1.0f/12) < 1) {
+                        meter[i].setCurrentStatus(old+(1.0f/12));
+                        tmpData[i] = old+(1.0f/12);
+                    } else {
+                        meter[i].setCurrentStatus(1);
+                        tmpData[i] = 1;
+                    }
+                } else {
+                    if (old-(1.0f/12) > 0) {
+                        meter[i].setCurrentStatus(old-(1.0f/12));
+                        tmpData[i] = old-(1.0f/12);
+                    } else {
+                        meter[i].setCurrentStatus(0);
+                        tmpData[i] = 0;
+                    }
+                }
+            }
             meter[i].invalidate();
         }
-        return new float[3];*/
+        return tmpData;
     }
 
+
+
     //根据收到数据包的时间间隔对设备的工作状态进行判断
-    private Runnable judgeState = new Runnable() {
+    /*private Runnable judgeState = new Runnable() {
         @Override
         public void run() {
             if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
@@ -359,7 +419,7 @@ public class ExaminePage extends Activity {
             }
             mHandler.postDelayed(judgeState, 1000);
         }
-    };
+    };*/
 
     //设置虚拟表参数
     private void setTableData(float[] msg) {
@@ -549,7 +609,7 @@ public class ExaminePage extends Activity {
     protected void onPause() {
         super.onPause();
         mHandler.removeCallbacks(writeThread);
-        mHandler.removeCallbacks(judgeState);
-        mHandler.removeCallbacks(reFresh);
+        //mHandler.removeCallbacks(judgeState);
+        //mHandler.removeCallbacks(reFresh);
     }
 }

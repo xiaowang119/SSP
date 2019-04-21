@@ -16,10 +16,10 @@ import java.util.List;
 
 public class VoltMeter extends MyGraphicalView {
 
-    private String TAG = "VoltMeter";
+    //private String TAG = "VoltMeter";
 
     private DialChart chart = new MyChart();
-    private float mPercentage = 0.0f;
+    //private float mPercentage = 0.0f;
 
     public VoltMeter(Context context) {
         super(context);
@@ -89,7 +89,8 @@ public class VoltMeter extends MyGraphicalView {
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
 
     }
@@ -171,7 +172,8 @@ public class VoltMeter extends MyGraphicalView {
             if(chart.getPlotAxis().size() >= 9)chart.getPlotAxis().get(9).getAxisPaint().setColor(Color.RED);*/
 
         }catch(Exception ex){
-            Log.e(TAG,ex.toString());
+            //Log.e(TAG,ex.toString());
+            ex.printStackTrace();
         }
     }
 
@@ -232,7 +234,8 @@ public class VoltMeter extends MyGraphicalView {
             chart.render(canvas);
 
         } catch (Exception e){
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
     }
 

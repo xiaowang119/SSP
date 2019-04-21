@@ -25,6 +25,7 @@ import com.example.zhx.ssp.MainActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import static android.os.SystemClock.currentThreadTimeMillis;
@@ -457,7 +458,7 @@ public class BluetoothService {
         //此处为数据读写
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[140];
+            byte[] buffer = new byte[280];
             int bytes;
             //byte cache[] = new byte[1024*1024];
 
@@ -466,6 +467,7 @@ public class BluetoothService {
 
                 try {
                     bytes = mmInStream.read(buffer);
+                    //android.util.Log.i("CZQ", bytesToHex(buffer,bytes));
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 
                     /*//用send代替obtain
@@ -537,5 +539,21 @@ public class BluetoothService {
             }
         }
 
+    }
+
+    //将byte转为对应字符串的函数
+    private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    public String bytesToHex(byte[] bytes, int length) {
+        char[] buf = new char[length * 2];
+        int index = 0;
+        byte tmp;
+        for(int i=0; i<length; i++) { // 利用位运算进行转换，可以看作方法一的变种
+            tmp = bytes[i];
+            buf[index++] = HEX_CHAR[tmp >>> 4 & 0x0f];
+            buf[index++] = HEX_CHAR[tmp & 0x0f];
+        }
+        return new String(buf);
     }
 }

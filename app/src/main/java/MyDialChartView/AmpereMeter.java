@@ -19,7 +19,7 @@ public class AmpereMeter extends MyGraphicalView {
     private String TAG = "AmpereMeter";
 
     private DialChart chart = new MyChart();
-    private float mPercentage = 0.0f;
+    //private float mPercentage = 0.0f;
 
     public AmpereMeter(Context context) {
         super(context);

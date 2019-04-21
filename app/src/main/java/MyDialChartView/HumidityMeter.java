@@ -18,9 +18,9 @@ import java.util.List;
 
 public class HumidityMeter extends MyGraphicalView {
 
-    private String TAG = "DialChart05View";
+    //private String TAG = "DialChart05View";
     private DialChart chart = new MyChart();
-    private float mPercentage = 0.0f;
+    //private float mPercentage = 0.0f;
 
     public HumidityMeter(Context context) {
         super(context);
@@ -73,7 +73,8 @@ public class HumidityMeter extends MyGraphicalView {
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -166,7 +167,8 @@ public class HumidityMeter extends MyGraphicalView {
         try {
             chart.render(canvas);
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            e.printStackTrace();
+            //Log.e(TAG, e.toString());
         }
     }
 }
