@@ -23,7 +23,7 @@ public class DataApplication extends Application {
     private BluetoothAdapter bluetoothAdapter;
     private String deviceAddress;
     private MainActivity mainActivity;
-    private DataCircle<Byte> dataCircle = new DataCircle<>(1024*1024);
+    private DataCircle<Byte> dataCircle = new DataCircle<>(42);
     private MyThread dealThread, connectThread;
 
 
@@ -43,11 +43,12 @@ public class DataApplication extends Application {
         }
         connectThread = new MyThread(5000, mHandler, Constants.BLUETOOTH_CONNECT);
         connectThread.start();
-        if (dealThread != null) {
+        //开启数据处理计时线程
+        /*if (dealThread != null) {
             dealThread.interrupt();
         }
-        dealThread = new MyThread(50, mHandler, Constants.MESSAGE_DEAL);
-        dealThread.start();
+        dealThread = new MyThread(100, mHandler, Constants.MESSAGE_DEAL);
+        dealThread.start();*/
 
     }
 
@@ -151,7 +152,7 @@ public class DataApplication extends Application {
                     break;
                 case Constants.MESSAGE_DEAL:
                     //Log.i("CZQ", "deal");
-                    readData();
+                    //readData();
                     break;
                 case Constants.MESSAGE_READ:
                     pack = (byte[]) msg.obj;
@@ -173,7 +174,7 @@ public class DataApplication extends Application {
 
 
     //将下位机发来的数据加入到数据环中
-    StringBuilder stringBuilder = new StringBuilder();
+    //StringBuilder stringBuilder = new StringBuilder();
     private void pushData(byte[] pack, int packLength) {
         /*stringBuilder.append(packLength+"-");
         if(stringBuilder.length() > 50) {
@@ -181,14 +182,14 @@ public class DataApplication extends Application {
             stringBuilder.delete(0, stringBuilder.length());
         }*/
         //Log.i("CZQ", )
-        if (!dataCircle.isFull()) {
-            for(int i=0; i<packLength; i++) {
-                if (!dataCircle.push(pack[i]))
-                    break;
-            }
-        }
-    }
 
+        for (int i = 0; i < packLength; i++) {
+            if (!dataCircle.push(pack[i]))
+                break;
+        }
+        //每当收到数据就执行一次转包
+        readData();
+    }
 
     //开启一个轮询读取数据环的子线程
     private int count = 2, previous = 0x00;

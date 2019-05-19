@@ -1,5 +1,9 @@
 package com.example.zhx.ssp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +13,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.LinearInterpolator;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -21,15 +25,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import MyDialChartView.AmpereMeter;
-import MyDialChartView.HumidityMeter;
-import MyDialChartView.LiquidMeter;
-import MyDialChartView.MyGraphicalView;
-import MyDialChartView.PressureMeter;
-import MyDialChartView.SpeedMeter;
-import MyDialChartView.TachoMeter;
-import MyDialChartView.TemperatureMeter;
-import MyDialChartView.VoltMeter;
+import MyDialChartView.MyMeter;
+import MyDialChartView.NewAmpereMeter;
+import MyDialChartView.NewSpeedMeter;
+import MyDialChartView.NewVoltMeter;
 import myUtil.BluetoothService;
 import myUtil.Constants;
 import myUtil.DataApplication;
@@ -58,11 +57,11 @@ public class ExaminePage extends Activity {
     //发给下位机的数据包
     private byte[] packet = new byte[12];
     //虚拟表的单位和最大标识范围
-    private float unit_Max[][] = new float[3][2];
+    private float unit_Max[][] = new float[3][3];
     private Handler mHandler;
     //虚拟表，按需进行初始化（父类引用指向子类对象）
     //MyGraphicalView meter1, meter2, meter3;
-    MyGraphicalView meter[] = new MyGraphicalView[3];
+    MyMeter meter[] = new MyMeter[3];
     private DataApplication myApplication;
 
 
@@ -85,7 +84,7 @@ public class ExaminePage extends Activity {
 
         setHandler();
         start();
-        new MyThread(250, mHandler, Constants.FROM_REFRESH_THREAD).start();
+        new MyThread(400, mHandler, Constants.FROM_REFRESH_THREAD).start();
 
     }
 
@@ -122,10 +121,13 @@ public class ExaminePage extends Activity {
         //初始化虚拟表参数
         unit_Max[0][0] = 0.1f;
         unit_Max[0][1] = 220;
+        unit_Max[0][2] = 1;
         unit_Max[1][0] = 0.1f;
         unit_Max[1][1] = 2000;
-        unit_Max[2][0] = 1;
+        unit_Max[1][2] = 10;
+        unit_Max[2][0] = 1f;
         unit_Max[2][1] = 2000;
+        unit_Max[2][2] = 10;
 
         //按照设定数量，获取进度条（拖条）
         if(progressNum>4) {
@@ -201,7 +203,7 @@ public class ExaminePage extends Activity {
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 5.5f);
 
         switch (deviceName) {
-            case "温度传感器":
+            /*case "温度传感器":
                 meter[0] = new TemperatureMeter(this, 90f);
                 meter[0].setLayoutParams(layout);
                 meterLayout1.addView(meter[0], 0);
@@ -242,22 +244,22 @@ public class ExaminePage extends Activity {
                 tableUnit1.setText("KPa");
                 tableUnit2.setText("KPa");
                 tableUnit3.setText("KPa");
-                break;
+                break;*/
             case "速度传感器":
-                meter[0] = new SpeedMeter(this);
+                meter[0] = new NewSpeedMeter(this);
                 meter[0].setLayoutParams(layout);
                 meterLayout1.addView(meter[0], 0);
-                meter[1] = new AmpereMeter(this, 180f);
+                meter[1] = new NewAmpereMeter(this);
                 meter[1].setLayoutParams(layout);
                 meterLayout2.addView(meter[1], 0);
-                meter[2] = new VoltMeter(this, 180f);
+                meter[2] = new NewVoltMeter(this);
                 meter[2].setLayoutParams(layout);
                 meterLayout3.addView(meter[2], 0);
                 tableUnit1.setText("km/h");
                 tableUnit2.setText("mA");
                 tableUnit3.setText("mV");
                 break;
-            case "转速传感器":
+            /*case "转速传感器":
                 meter[0] = new TachoMeter(this);
                 meter[0].setLayoutParams(layout);
                 meterLayout1.addView(meter[0], 0);
@@ -284,7 +286,7 @@ public class ExaminePage extends Activity {
                 tableUnit1.setVisibility(View.GONE);
                 tableUnit2.setVisibility(View.GONE);
                 tableUnit3.setVisibility(View.GONE);
-                break;
+                break;*/
         }
     }
 
@@ -307,7 +309,9 @@ public class ExaminePage extends Activity {
 
     private void reFresh() {
         //Log.i("CZQ", "刷新一次");
+
         setTableData(refreshPointer());
+
         //setTableData(new float[3]);
         /*if (mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
             if (MainActivity.isAbnormal) {
@@ -324,6 +328,24 @@ public class ExaminePage extends Activity {
 
     //定义一个刷新表盘指针的函数
     private float[] refreshPointer() {
+
+        float tmpData[] = new float[3];
+        for (int i=0; i<3; i++) {
+            tmpData[i] = (myApplication.meterData[i][0]*256
+                    + myApplication.meterData[i][1])* unit_Max[i][0];
+            if(tmpData[i] < 0) {
+                reDrawMeter(i, 0);
+            } else if (tmpData[i] > unit_Max[i][1]){
+                reDrawMeter(i, unit_Max[i][1]/unit_Max[i][2]);
+            } else {
+                reDrawMeter(i, tmpData[i]/unit_Max[i][2]);
+            }
+            //meter[i].invalidate();
+            Log.i("xiaowang", Float.toString(tmpData[i]));
+        }
+        return tmpData;
+
+
         //根据数据实时跳变
         /*float tmpData[] = new float[3];
         //long time = System.currentTimeMillis();
@@ -358,7 +380,7 @@ public class ExaminePage extends Activity {
 
 
         //更具变化方向缓慢进行
-        float tmpData[] = new float[3];
+        /*float tmpData[] = new float[3];
         for (int i=0; i<3; i++) {
             tmpData[i] = (myApplication.meterData[i][0]*256
                     + myApplication.meterData[i][1]) * unit_Max[i][0];
@@ -397,9 +419,41 @@ public class ExaminePage extends Activity {
             }
             meter[i].invalidate();
         }
-        return tmpData;
+        return tmpData;*/
     }
 
+    private void reDrawMeter(int i, float value) {
+        final int tmp = i;
+        if (meter[i].isAnimFinished) {
+            ObjectAnimator animator = ObjectAnimator.ofInt(meter[tmp], "mRealTimeValue",
+                    meter[tmp].getRealTimeValue(), Math.round(value));
+            animator.setDuration(350).setInterpolator(new LinearInterpolator());
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    meter[tmp].isAnimFinished = false;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    meter[tmp].isAnimFinished = true;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    meter[tmp].isAnimFinished = true;
+                }
+            });
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int value = (int) animation.getAnimatedValue();
+                    meter[tmp].setRealTimeValue(value);
+                }
+            });
+            animator.start();
+        }
+    }
 
 
     //根据收到数据包的时间间隔对设备的工作状态进行判断

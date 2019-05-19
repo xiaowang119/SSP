@@ -4,54 +4,6 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical">
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:weightSum="5"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:text="SPP | Version 1.0" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:layout_weight="3"/>
-        <TextView
-            android:id="@+id/state_connected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="已连接到..."
-            android:drawableLeft="@drawable/lamp_green" />
-        <TextView
-            android:id="@+id/state_disconnected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            android:layout_weight="1"
-            android:text="连接断开"
-            android:drawableLeft="@drawable/lamp_red" />
-        <TextView
-            android:id="@+id/state_abnormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_vertical"
-            android:visibility="gone"
-            android:layout_weight="1"
-            android:text="连接异常"
-            android:drawableLeft="@drawable/lamp_yellow" />
-
-    </LinearLayout>-->
 
     <View
         android:layout_width="match_parent"
@@ -70,12 +22,12 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="5"
-            android:weightSum="5">
+            android:weightSum="2">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:weightSum="3"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -96,18 +48,18 @@
                         android:layout_height="0dp"
                         android:layout_weight="1.5"
                         android:weightSum="5"
+                        android:gravity="center_vertical|right"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/table_text1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3.5"
-                            android:layout_gravity="center"
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/my_border"
                             android:gravity="center"
-                            android:singleLine="true"
-                            android:text="123.110"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
                         <TextView
                             android:id="@+id/table_unit1"
                             android:layout_width="0dp"
@@ -115,8 +67,8 @@
                             android:layout_weight="1.5"
                             android:layout_gravity="center"
                             android:layout_marginLeft="2dp"
-                            android:singleLine="true"
-                            android:text="%"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -124,10 +76,13 @@
                     android:id="@+id/meter2_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+
                     android:layout_weight="1"
                     android:weightSum="7"
                     android:orientation="vertical">
 
+                    <!--android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"-->
                     <!--<MyDialChartView.SpeedMeter
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -138,6 +93,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1.5"
                         android:weightSum="5"
+                        android:gravity="center_vertical|right"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/table_text2"
@@ -148,8 +104,8 @@
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/my_border"
                             android:gravity="center"
-                            android:singleLine="true"
-                            android:text="3125.32"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
                         <TextView
                             android:id="@+id/table_unit2"
                             android:layout_width="0dp"
@@ -157,8 +113,8 @@
                             android:layout_weight="1.5"
                             android:layout_gravity="center"
                             android:layout_marginLeft="2dp"
-                            android:singleLine="true"
-                            android:text="km/h"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -180,6 +136,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1.5"
                         android:weightSum="5"
+                        android:gravity="center_vertical|right"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/table_text3"
@@ -190,8 +147,8 @@
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/my_border"
                             android:gravity="center"
-                            android:singleLine="true"
-                            android:text="554"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
                         <TextView
                             android:id="@+id/table_unit3"
                             android:layout_width="0dp"
@@ -199,12 +156,15 @@
                             android:layout_weight="1.5"
                             android:layout_gravity="center"
                             android:layout_marginLeft="2dp"
-                            android:singleLine="true"
-                            android:text="KPa"/>
+                            android:textColor="#000000"
+                            android:singleLine="true" />
 
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+
+
 
             <View
                 android:layout_width="match_parent"
@@ -214,7 +174,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:orientation="horizontal">
                 <ScrollView
                     android:layout_width="wrap_content"
