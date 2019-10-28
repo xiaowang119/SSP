@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;

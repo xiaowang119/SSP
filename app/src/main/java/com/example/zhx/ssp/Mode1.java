@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import myUtil.DeviceListAdapter;
-import myUtil.DeviceListItem;
+import MyUtil.DeviceListAdapter;
+import MyUtil.DeviceListItem;
 
 public class Mode1 extends AppCompatActivity {
     private int name_id[] = {

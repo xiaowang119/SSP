@@ -5,8 +5,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 
-import myUtil.Constants;
-
 /**
  * 作者：created by 11374 2019-04-26
  * 邮箱：xxxxx.qq.com

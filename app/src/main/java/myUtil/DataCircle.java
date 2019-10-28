@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -26,14 +26,14 @@ public class DataCircle<T> {
     private final static byte READED = 1;// 数据读过
 
     private int mCapacity = 0;
-    private List<Node> mDataBuf = null;
+    private List<Node> mDataBuf;
     private int mReader = 0;
     private int mWriter = 0;
 
 
     private class Node {
-        private T object = null;
-        private byte flag = INVALID;
+        private T object;
+        private byte flag;
 
         private Node(T object, byte flag) {
             this.object = object;
@@ -122,8 +122,8 @@ public class DataCircle<T> {
             else {// 已读空
             }
         } catch (Exception e) {// No data
+            e.printStackTrace();
         }
-
         return null;
     }
 

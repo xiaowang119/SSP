@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 public class DeviceListItem {
     private int drawable_id;

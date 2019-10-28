@@ -4,22 +4,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import myUtil.BluetoothService;
-import myUtil.DataApplication;
-import myUtil.MyMessage;
-import myUtil.TableAdapter;
+import MyUtil.BluetoothService;
+import MyUtil.Constants;
+import MyUtil.DataApplication;
+import MyUtil.MyMessage;
+import MyUtil.MyThread;
+import MyUtil.TableAdapter;
 
 public class MsgTable extends Activity {
 
@@ -31,7 +32,7 @@ public class MsgTable extends Activity {
     private ListView msgView;
 
     private byte[] packet = new byte[12];
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     private DataApplication myApplication;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,29 +65,45 @@ public class MsgTable extends Activity {
         msgView.setAdapter(msgAdapter);
 
         setPacket();
+        setHandler();
         //tmpTest();
         //mHandler.postDelayed(writeThread, 100);
-        mHandler.post(reFresh);
-        mHandler.postDelayed(judgeState, 1000);
+        //mHandler.postDelayed(judgeState, 1000);
+        new MyThread(300, mHandler, Constants.FROM_REFRESH_THREAD).start();
+
+    }
+
+    private void setHandler() {
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case Constants.FROM_REFRESH_THREAD:
+                        reFresh();
+                    case Constants.FROM_STATUS_THREAD:
+
+                    case Constants.FROM_WRITE_THREAD:
+
+                }
+            }
+        };
     }
 
     //定时刷新数据的线程
-    private Runnable reFresh = new Runnable() {
-        @Override
-        public void run() {
-            if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (!myApplication.isAbnormal) {
-                    setListTableData(true);
-                }else {
-                    setListTableData(false);
-                }
+    private void reFresh() {
+        if (myApplication.mBluetoothService.getState() == BluetoothService.STATE_CONNECTED) {
+            if (!myApplication.isAbnormal) {
+                setListTableData(true);
             } else {
                 setListTableData(false);
             }
-            msgAdapter.notifyDataSetChanged();
-            mHandler.postDelayed(reFresh, 100);
+        } else {
+            setListTableData(false);
         }
-    };
+        msgAdapter.notifyDataSetChanged();
+    }
+
 
     //定时向下位机发送数据包的线程
     private Runnable writeThread = new Runnable() {
@@ -170,6 +187,7 @@ public class MsgTable extends Activity {
     }
 
     private void setListTableData(boolean isGood) {
+        //Log.i("xiaowang", "刷新了一次表！");
         if (isGood) {
             switch (pageID) {
                 case 1:

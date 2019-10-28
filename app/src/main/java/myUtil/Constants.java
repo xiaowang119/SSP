@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 /**
  * Defines several constants used between {@link BluetoothService} and the UI.

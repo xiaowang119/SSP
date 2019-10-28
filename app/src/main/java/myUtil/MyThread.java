@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 import android.os.Handler;
 

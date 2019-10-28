@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 public class MyMessage {
     private String id;

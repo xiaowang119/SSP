@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
@@ -237,10 +237,11 @@ public class DataApplication extends Application {
         //Log.i("CZQ", bytesToHex(pack, 14));
         if (isLegal(pack)) {
             getMeterData(pack);
+            getListTableData(pack);
             mHandler.sendEmptyMessage(1);
-        } else {
+        } /*else {
             Log.i("CZQ", bytesToHex(pack, 14));
-        }
+        }*/
     }
 
 
@@ -287,12 +288,17 @@ public class DataApplication extends Application {
 
 
     //将接收到的数据转化为参数列表的数据
+    int i = 0;
     private void getListTableData(byte[] packet) {
         mDeviceID = (int) packet[3];
         double tmp = (packet[4]*256 + packet[5])/100.0 +0.1;
-        if (mDeviceID > 0 && mDeviceID <= 200) {
+        /*if (mDeviceID > 0 && mDeviceID <= 200) {
             listTableData[mDeviceID - 1] = tmp;
+        }*/
+        if (i >= 200) {
+            i = 0;
         }
+        listTableData[i++] = tmp;
     }
 
 

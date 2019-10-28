@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 /**
 
  * Basic interface for a logging system that can output to one or more targets.

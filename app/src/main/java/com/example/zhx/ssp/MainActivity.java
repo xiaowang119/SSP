@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import myUtil.DataApplication;
+import MyUtil.DataApplication;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -201,49 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+////////废弃的原始代码
 
 /*package com.example.zhx.ssp;
 

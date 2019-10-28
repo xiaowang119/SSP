@@ -1,7 +1,5 @@
-package myUtil;
+package MyUtil;
 import android.util.Log;
-
-import myUtil.LogNode;
 
 
 /**

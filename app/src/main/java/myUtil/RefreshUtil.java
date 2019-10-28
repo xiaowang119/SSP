@@ -1,7 +1,6 @@
-package myUtil;
+package MyUtil;
 
 import android.os.Handler;
-import android.util.Log;
 
 public class RefreshUtil extends Thread{
     private Handler mHandler;

@@ -1,4 +1,4 @@
-package myUtil;
+package MyUtil;
 
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;

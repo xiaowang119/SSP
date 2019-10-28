@@ -29,10 +29,10 @@ import MyDialChartView.MyMeter;
 import MyDialChartView.NewAmpereMeter;
 import MyDialChartView.NewSpeedMeter;
 import MyDialChartView.NewVoltMeter;
-import myUtil.BluetoothService;
-import myUtil.Constants;
-import myUtil.DataApplication;
-import myUtil.MyThread;
+import MyUtil.BluetoothService;
+import MyUtil.Constants;
+import MyUtil.DataApplication;
+import MyUtil.MyThread;
 
 public class ExaminePage extends Activity {
 
@@ -44,12 +44,12 @@ public class ExaminePage extends Activity {
     private static int progress1_max = 100,
             progress2_max = 100, progress3_max = 100, progress4_max = 100;
     //定义开关数量
-    private int switchNum = 10;
+    private int switchNum = 1;
     //定义拖条数量
-    private int progressNum = 2;
+    private int progressNum = 1;
     //拖条的文本信息显示框组成的链表
     private List<TextView> progressTextList;
-    //flag变量，防止反复的异常提升
+    //flag变量，防止反复的异常提醒
     private boolean avoidRepetition = false;
     //虚拟表的文本控件
     private TextView tableText1, tableText2, tableText3, tableUnit1, tableUnit2,
